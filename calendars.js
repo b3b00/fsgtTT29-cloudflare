@@ -251,7 +251,7 @@ const scrapper = {
     let res = await feth(url);
     let day = "";
 
-    if (res.statusCode == 200) {
+    if (res.status == 200) {
       let html = res.text();
 
       var content = Utf8ArrayToStr(html);
@@ -310,10 +310,11 @@ const scrapper = {
 
       let res = await fetch(url)
 
-      if (res.statusCode == 200) {
+
+      if (res.status == 200) {
         let html = await res.text();
 
-        let teams = fsgtScrapper.getTeams(html);
+        let teams = fsgtScrapper.getTeams(html);        
         teamsGrouped[groups[i]] = teams;        
       }      
     }
@@ -375,9 +376,9 @@ module.exports.GetCalendar = async function(group, team) {
     url = groupe_url_schema;
   }
 
-  let res = await fetch("GET", url);
+  let res = await fetch(url);
 
-  if (res.statusCode == 200) {
+  if (res.status == 200) {
     let html = await res.text();
 
     let teams = fsgtScrapper.getTeams(html);
@@ -400,9 +401,9 @@ module.exports.GetCalendar = async function(group, team) {
       url = groupe_url_schema;
     }
 
-    let res = await fetch("GET", url);
+    let res = await fetch(url);
 
-    if (res.statusCode == 200) {
+    if (res.status == 200) {
       let html = await res.text();
 
       let teams = fsgtScrapper.getTeams(html);
