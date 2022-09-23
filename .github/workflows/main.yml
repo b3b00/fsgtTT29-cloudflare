@@ -33,4 +33,5 @@ jobs:
       - name: Publish to Cloudflare
         uses: cloudflare/wrangler-action@2.0.0
         with:
-          apiToken: ${{ secrets.CF_API_TOKEN }}
+          apiKey: ${{ secrets.CF_API_TOKEN }}
+          email: ${{ secrets.CF_EMAIL }}
