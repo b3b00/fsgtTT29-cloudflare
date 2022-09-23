@@ -1,0 +1,24 @@
+{
+    "name": "{{ project-name }}",
+    "private": true,
+    "version": "1.0.0",
+    "description": "package for creating workers templates",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "format": "prettier --write '**/*.{js,css,json,md}'"
+    },
+    "author": "{{ authors }}",
+    "license": "ISC",
+    "devDependencies": {
+        "prettier": "^1.17.0"
+    },
+    "dependencies": {
+        "itty-router": "^2.1.9",
+        "serverless-cloudflare-workers": "^1.2.0",
+        "cheerio": "^1.0.0-rc.2",
+        "moment": "^2.24.0",
+        "sync-request": "6.0.0",
+        "ejs": "^2.5.6"
+    }
+}

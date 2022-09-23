@@ -1,0 +1,8 @@
+name = "router"
+type = "webpack"
+
+account_id = "57ca8e669d1a64e750688a1de13c1745"
+workers_dev = true
+zone_id = ""
+entry-point="index.js"
+node_compat = true
