@@ -27,6 +27,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
+      - run : npm i
 
       # Runs a single command using the runners shell
       - name: Publish to Cloudflare
