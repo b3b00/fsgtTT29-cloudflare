@@ -8,6 +8,7 @@ module.exports.getTemplate = function() {
       integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
       crossorigin="anonymous"></script>
       <title>FSGT 29 TT calendars</title>  
+      <meta charset="UTF-8">
     </head>
     <script>
     changeGroup = function(group) {
@@ -33,7 +34,7 @@ module.exports.getTemplate = function() {
       team = teams.value;
       shortTeam = team != null ? team.replace(" ", "").toLocaleLowerCase() : "";
       if (shortTeam == "" || group == "") {
-        window.alert("vous devez d'abord choisir un group et une &eacute;quipe !");
+        window.alert("vous devez d'abord choisir un group et une équipe !");
         return;
       }
       downloader = document.getElementById("downloader");
@@ -52,15 +53,15 @@ module.exports.getTemplate = function() {
         <h1>charger votre calendrier FSGT  TT 29</h1>
         <label for="groups">Groupes : </label>
         <select id="groups" onchange="changeGroup();">
-          <option value="">S&eacute;lectionner un groupe</option>
+          <option value="">Sélectionner un groupe</option>
           <%=groupsOptions%>     
         </select>
         <br><br>
-        <label for="teams">&eacute;quipe :</label>
+        <label for="teams">&quipe :</label>
         <select id="teams">      
-          <option value="">S&eacute;lectionner une &eacute;quipe</option>
+          <option value="">Sélectionner une équipe</option>
         </select><br><br>
-        <button onclick="download();">t&eacute;l&eacute;charger le calendrier</button>
+        <button onclick="download();">télécharger le calendrier</button>
         
     
     
