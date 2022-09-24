@@ -130,8 +130,8 @@ const iCalendarGeneration = {
   writeMatchEvent: function(calFile, match, teams, team) {
     fs.appendFileSync(calFile, "\r\nBEGIN:VEVENT\r\n");
     let date = this.getMatchDate(match, teams);
-    fs.appendFileSync(calFile, "DTSTART:" + date + "203000Z\r\n");
-    fs.appendFileSync(calFile, "DTEND:" + date + "220000Z\r\n");
+    fs.appendFileSync(calFile, "DTSTART:" + date + "183000Z\r\n");
+    fs.appendFileSync(calFile, "DTEND:" + date + "200000Z\r\n");
     let lbl = this.getMatchLabel(match, team);
     fs.appendFileSync(calFile, "SUMMARY:" + lbl + "\r\n");
     fs.appendFileSync(calFile, "DESCRIPTION:" + lbl + "\r\n");
@@ -156,8 +156,8 @@ const iCalendarGeneration = {
   getMatchEvent: function(match, teams, team) {
     let content = "\r\nBEGIN:VEVENT\r\n";
     let date = this.getMatchDate(match, teams);
-    content += "DTSTART:" + date + "203000Z\r\n";
-    content += "DTEND:" + date + "220000Z\r\n";
+    content += "DTSTART:" + date + "183000Z\r\n";
+    content += "DTEND:" + date + "200000Z\r\n";
     let lbl = this.getMatchLabel(match, team);
     content += "SUMMARY:" + lbl + "\r\n";
     content += "DESCRIPTION:" + lbl + "\r\n";
