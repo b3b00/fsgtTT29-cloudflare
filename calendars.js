@@ -142,6 +142,7 @@ const iCalendarGeneration = {
     let content = "";
 
     content += "BEGIN:VCALENDAR\r\n";
+content += "X-WR-CALNAME:FSGT\r\n";
     content += "VERSION:2.0\r\n";
     for (let l = 0; l < matches.length; l++) {
       let m = matches[l];
