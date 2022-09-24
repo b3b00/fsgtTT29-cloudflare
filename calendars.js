@@ -156,8 +156,8 @@ const iCalendarGeneration = {
   getMatchEvent: function(match, teams, team) {
     let content = "\r\nBEGIN:VEVENT\r\n";
     let date = this.getMatchDate(match, teams);
-    content += "DTSTART:" + date + "183000Z\r\n";
-    content += "DTEND:" + date + "200000Z\r\n";
+    content += "DTSTART;TZID=/Europe/Paris:" + date + "183000Z\r\n";
+    content += "DTEND;TZID=/Europe/Paris:" + date + "200000Z\r\n";
     let lbl = this.getMatchLabel(match, team);
     content += "SUMMARY:" + lbl + "\r\n";
     content += "DESCRIPTION:" + lbl + "\r\n";
