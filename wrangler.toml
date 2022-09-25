@@ -1,6 +1,5 @@
 name = "router"
 main = "./index.js"
-account_id = "57ca8e669d1a64e750688a1de13c1745"
 workers_dev = true
 node_compat = true
 compatibility_date = "2022-09-23"

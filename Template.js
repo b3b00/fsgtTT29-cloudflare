@@ -9,6 +9,8 @@ module.exports.getTemplate = function() {
       crossorigin="anonymous"></script>
       <title>FSGT 29 TT calendars</title>  
       <meta charset="UTF-8">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+
     </head>
     <script>
     changeGroup = function(group) {
@@ -57,7 +59,7 @@ module.exports.getTemplate = function() {
           <%=groupsOptions%>     
         </select>
         <br><br>
-        <label for="teams">&quipe :</label>
+        <label for="teams">Équipes :</label>
         <select id="teams">      
           <option value="">Sélectionner une équipe</option>
         </select><br><br>

@@ -129,9 +129,11 @@ const iCalendarGeneration = {
    */
   writeMatchEvent: function(calFile, match, teams, team) {
     fs.appendFileSync(calFile, "\r\nBEGIN:VEVENT\r\n");
+    fs.appendFileSync(calFile, "\r\nX-WR-TIMEZONE:Europe/Paris\r\n");
+    fs.appendFileSync(calFile,"UID:"+crypto.randomUUID().toUpperCase()+"\r\n");
     let date = this.getMatchDate(match, teams);
-    fs.appendFileSync(calFile, "DTSTART:" + date + "183000Z\r\n");
-    fs.appendFileSync(calFile, "DTEND:" + date + "200000Z\r\n");
+    fs.appendFileSync(calFile, "DTSTART;TZID=/Europe/Paris:" + date + "203000\r\n");
+    fs.appendFileSync(calFile, "DTEND;TZID=/Europe/Paris:" + date + "220000\r\n");
     let lbl = this.getMatchLabel(match, team);
     fs.appendFileSync(calFile, "SUMMARY:" + lbl + "\r\n");
     fs.appendFileSync(calFile, "DESCRIPTION:" + lbl + "\r\n");
@@ -142,7 +144,7 @@ const iCalendarGeneration = {
     let content = "";
 
     content += "BEGIN:VCALENDAR\r\n";
-content += "X-WR-CALNAME:FSGT\r\n";
+    content += "X-WR-CALNAME:FSGT\r\n";
     content += "VERSION:2.0\r\n";
     for (let l = 0; l < matches.length; l++) {
       let m = matches[l];
@@ -156,9 +158,11 @@ content += "X-WR-CALNAME:FSGT\r\n";
 
   getMatchEvent: function(match, teams, team) {
     let content = "\r\nBEGIN:VEVENT\r\n";
+    // content += "\r\nX-WR-TIMEZONE:Europe/Paris\r\n";
     let date = this.getMatchDate(match, teams);
-    content += "DTSTART;TZID=/Europe/Paris:" + date + "203000Z\r\n";
-    content += "DTEND;TZID=/Europe/Paris:" + date + "220000Z\r\n";
+    content += "DTSTART;TZID=/Europe/Paris:" + date + "203000\r\n";
+    content +="UID:"+crypto.randomUUID().toUpperCase()+"\r\n";
+    content += "DTEND;TZID=/Europe/Paris:" + date + "220000\r\n";
     let lbl = this.getMatchLabel(match, team);
     content += "SUMMARY:" + lbl + "\r\n";
     content += "DESCRIPTION:" + lbl + "\r\n";
