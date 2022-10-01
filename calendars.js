@@ -102,7 +102,7 @@ const iCalendarGeneration = {
       samedi: 5,
       dimanche: 6
     };
-    return mapping[day];
+    return mapping[day]+1;
   },
 
   /*
