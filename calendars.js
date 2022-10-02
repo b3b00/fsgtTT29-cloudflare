@@ -114,9 +114,9 @@ const iCalendarGeneration = {
     let dayInWeek = d.weekday();
     let localTeamDay = this.getLocalTeamWeekDay(localTeam.Day);
     if (dayInWeek < localTeamDay) {
-      d.add(localTeamDay - dayInWeek + 1, "days");
+      d.add(localTeamDay - dayInWeek, "days");
     } else if (dayInWeek > localTeamDay) {
-      d.subtract(dayInWeek - localTeamDay - 1, "days");
+      d.subtract(dayInWeek - localTeamDay, "days");
     }
 
     let dateStr = d.format("YYYYMMDDT");
