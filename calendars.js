@@ -253,7 +253,7 @@ const scrapper = {
   getTeamDay: async function(team) {
     let url =
       "http://t2t.29.fsgt.org/equipe/" + team.replace(/ /g, "-").toLowerCase();
-    let res = await fetch(url);
+    let res = await feth(url);
     let day = "";
 
     if (res.status == 200) {
