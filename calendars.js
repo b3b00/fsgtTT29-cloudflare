@@ -132,7 +132,7 @@ const iCalendarGeneration = {
     fs.appendFileSync(calFile, "\r\nX-WR-TIMEZONE:Europe/Paris\r\n");
     fs.appendFileSync(calFile,"UID:"+crypto.randomUUID().toUpperCase()+"\r\n");
     let date = this.getMatchDate(match, teams);
-    fs.appendFileSync(calFile, "DTSTART;TZID=/Europe/Paris:" + date + "203000\r\n");
+    fs.appendFileSync(calFile, "DTSTART;TZID=/Europe/Paris:" + date + "200000\r\n");
     fs.appendFileSync(calFile, "DTEND;TZID=/Europe/Paris:" + date + "220000\r\n");
     let lbl = this.getMatchLabel(match, team);
     fs.appendFileSync(calFile, "SUMMARY:" + lbl + "\r\n");
@@ -160,7 +160,7 @@ const iCalendarGeneration = {
     let content = "\r\nBEGIN:VEVENT\r\n";
     // content += "\r\nX-WR-TIMEZONE:Europe/Paris\r\n";
     let date = this.getMatchDate(match, teams);
-    content += "DTSTART;TZID=/Europe/Paris:" + date + "203000\r\n";
+    content += "DTSTART;TZID=/Europe/Paris:" + date + "200000\r\n";
     content +="UID:"+crypto.randomUUID().toUpperCase()+"\r\n";
     content += "DTEND;TZID=/Europe/Paris:" + date + "220000\r\n";
     let lbl = this.getMatchLabel(match, team);
@@ -253,24 +253,22 @@ const scrapper = {
   getTeamDay: async function(team) {
     let url =
       "http://t2t.29.fsgt.org/equipe/" + team.replace(/ /g, "-").toLowerCase();
-    let res = await feth(url);
+    let res = await fetch(url);
     let day = "";
 
     if (res.status == 200) {
-      let html = res.text();
+      let html = await res.text();
 
-      var content = Utf8ArrayToStr(html);
-
-      let i = content.indexOf("Reçoit le ");
+      let i = html.indexOf("Reçoit le ");
       if (i > 0) {
-        content = content.substring(i);
-        i = content.indexOf("<");
-        content = content.substring(0, i);
-        content = content.trim().replace(".", "");
-        let words = content.split(" ");
+        html = html.substring(i);
+        i = html.indexOf("<");
+        html = html.substring(0, i);
+        html = html.trim().replace(".", "");
+        let words = html.split(" ");
 
         day = words[words.length - 1];
-      }
+      } 
     }
     return day;
   },
@@ -285,7 +283,7 @@ const scrapper = {
 
    
 
-  getTeams: function(html) {
+  getTeams: async function(html, light) {
     let teamNames = scrapper.etxractdataFromNodeArray(
       html,
       "div#classement table tr td.nom"
@@ -295,31 +293,29 @@ const scrapper = {
     for (let i = 0; i < teamNames.length; i++) {
       let team = {};
       team.Name = teamNames[i];
-      team.Day = fsgtScrapper.getTeamDay(team.Name);
+      if (!light) {  // do not request team playing day to avoir too many subrequests.
+        const d = await fsgtScrapper.getTeamDay(team.Name);
+        team.Day = d;
+      }
       teams.push(team);
     }
 
     return teams;
   },
 
-  getTeamsByGroup: async function(groups) {
+  getTeamsByGroup: async function(groups,light) {
     let teamsGrouped = {};
     for (let i = 0; i < groups.length; i++) {
       let url = groupe_url_schema + "-" + groups[i];
-
+      
       if (groups[i] == "a") {
         url = groupe_url_schema;
       }
-
-      // let res = request("GET", url);
-
-      let res = await fetch(url)
-
+      let res = await fetch(url);
 
       if (res.status == 200) {
         let html = await res.text();
-
-        let teams = fsgtScrapper.getTeams(html);        
+        let teams = await fsgtScrapper.getTeams(html,light);        
         teamsGrouped[groups[i]] = teams;        
       }      
     }
@@ -380,14 +376,11 @@ module.exports.GetCalendar = async function(group, team) {
   if (group == "a") {
     url = groupe_url_schema;
   }
-
   let res = await fetch(url);
-
   if (res.status == 200) {
-    let html = await res.text();
+    let html =await res.text();
 
-    let teams = fsgtScrapper.getTeams(html);
-
+    let teams = await fsgtScrapper.getTeams(html,false);
     let matchArray = fsgtScrapper.getMatches(html);
 
     if (team != null) {
@@ -409,7 +402,7 @@ module.exports.GetCalendar = async function(group, team) {
     let res = await fetch(url);
 
     if (res.status == 200) {
-      let html = await res.text();
+      let html =await res.text();
 
       let teams = fsgtScrapper.getTeams(html);
 
@@ -425,9 +418,6 @@ module.exports.GetCalendar = async function(group, team) {
           iCalendarGeneration.writeCalendar(matchArray, group, teams, teams[t]);
         }
       }
-    } else {
-      console.log("error on (" + group + ") : " + url);
-    }
+    } 
   };
 };
-
