@@ -33,7 +33,7 @@ const index = async function(request) {
 <option value='d'>d</option>
 <option value='e'>e</option>
 <option value='f'>f</option>`;
-  const teamsByGroup = await calendars.scrapper.getTeamsByGroup(['a','b','c','d','e','f']);  
+  const teamsByGroup = await calendars.scrapper.getTeamsByGroup(['a','b','c','d','e','f'],true);  
   template = template.replace("<%=teamsByGroup%>",JSON.stringify(teamsByGroup));
   template = template.replace("<%=groupsOptions%>",groups);
   let response = new Response(template);  
@@ -41,12 +41,20 @@ const index = async function(request) {
   return response;
 }
 
-
+const test = async function(request) {
+  var group = request.params.group;
+  console.log(`loading group [${group}`);
+  const teamsByGroup = await calendars.scrapper.getTeamsByGroup([group],false);    
+  let response = new Response(JSON.stringify(teamsByGroup));
+  return response;
+}
 
 router.get('/', index);
 
 
 router.get('/calendars/:group/:team', GetCalendar)
+
+router.get('/test/:group', test)
 
 
 router.all("*", () => new Response("404, not found!", { status: 404 }))

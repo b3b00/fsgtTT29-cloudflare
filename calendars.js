@@ -253,23 +253,40 @@ const scrapper = {
   getTeamDay: async function(team) {
     let url =
       "http://t2t.29.fsgt.org/equipe/" + team.replace(/ /g, "-").toLowerCase();
-    let res = await feth(url);
+
+    console.log(`loading team ${team} from ${url}`);
+
+    let res = await fetch(url);
+    console.log("...");
     let day = "";
 
+    console.log(`team (${team}) fetch done : ${res.status}`);
+
     if (res.status == 200) {
-      let html = res.text();
+      let html = await res.text();
 
-      var content = Utf8ArrayToStr(html);
-
-      let i = content.indexOf("Reçoit le ");
+      console.log(`**************************************`)
+      console.log(`***                                 **`)
+      console.log(`*** ${team}`)
+      console.log(`***                                 **`)
+      //fs.writeFileSync(`c:/temp/${team.replace(/ /g, "-").toLowerCase()}.html`,content);
+//      console.log(`content :\n[${html}]`);
+      console.log(`**************************************`)
+      console.log(`**************************************`)
+      let i = html.indexOf("Reçoit le ");
       if (i > 0) {
-        content = content.substring(i);
-        i = content.indexOf("<");
-        content = content.substring(0, i);
-        content = content.trim().replace(".", "");
-        let words = content.split(" ");
+        console.log(`[${team}] : pattern found.`)
+        html = html.substring(i);
+        i = html.indexOf("<");
+        html = html.substring(0, i);
+        html = html.trim().replace(".", "");
+        let words = html.split(" ");
 
         day = words[words.length - 1];
+        console.log(`[${team}] : day found => ${day}`);
+      } 
+      else {
+        console.log(`[${team}] : pattern not found`);
       }
     }
     return day;
@@ -285,7 +302,7 @@ const scrapper = {
 
    
 
-  getTeams: function(html) {
+  getTeams: async function(html, light) {
     let teamNames = scrapper.etxractdataFromNodeArray(
       html,
       "div#classement table tr td.nom"
@@ -295,31 +312,35 @@ const scrapper = {
     for (let i = 0; i < teamNames.length; i++) {
       let team = {};
       team.Name = teamNames[i];
-      team.Day = fsgtScrapper.getTeamDay(team.Name);
+      if (!light) {
+        const d = await fsgtScrapper.getTeamDay(team.Name);
+        console.log(`getTeamDay(${team.Name}) => ${d}`)
+        team.Day = d;
+      }
       teams.push(team);
     }
 
     return teams;
   },
 
-  getTeamsByGroup: async function(groups) {
+  getTeamsByGroup: async function(groups,light) {
     let teamsGrouped = {};
     for (let i = 0; i < groups.length; i++) {
       let url = groupe_url_schema + "-" + groups[i];
-
+      
       if (groups[i] == "a") {
         url = groupe_url_schema;
       }
+      console.log(`loading group ${groups[i]} from ${url}`);
+      let res = await fetch(url);
 
-      // let res = request("GET", url);
-
-      let res = await fetch(url)
-
-
+      console.log(`group ${groups[i]} fetch done ${res.status}`);
       if (res.status == 200) {
         let html = await res.text();
 
-        let teams = fsgtScrapper.getTeams(html);        
+        let teams = await fsgtScrapper.getTeams(html,light);        
+        console.log(`${teams.length} teams found:`);
+        console.log(teams);
         teamsGrouped[groups[i]] = teams;        
       }      
     }
@@ -380,13 +401,13 @@ module.exports.GetCalendar = async function(group, team) {
   if (group == "a") {
     url = groupe_url_schema;
   }
-
+console.log(`fetch calendar for ${team} in ${group} from ${url}`)
   let res = await fetch(url);
 
   if (res.status == 200) {
-    let html = await res.text();
+    let html =await res.text();
 
-    let teams = fsgtScrapper.getTeams(html);
+    let teams = fsgtScrapper.getTeams(html,false);
 
     let matchArray = fsgtScrapper.getMatches(html);
 
@@ -406,10 +427,11 @@ module.exports.GetCalendar = async function(group, team) {
       url = groupe_url_schema;
     }
 
+    console.log(`download group ${group} from ${url}`);
     let res = await fetch(url);
 
     if (res.status == 200) {
-      let html = await res.text();
+      let html =await res.text();
 
       let teams = fsgtScrapper.getTeams(html);
 
