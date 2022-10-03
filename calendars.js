@@ -253,29 +253,14 @@ const scrapper = {
   getTeamDay: async function(team) {
     let url =
       "http://t2t.29.fsgt.org/equipe/" + team.replace(/ /g, "-").toLowerCase();
-
-    // console.log(`loading team ${team} from ${url}`);
-
     let res = await fetch(url);
-    // console.log("...");
     let day = "";
-
-    // console.log(`team (${team}) fetch done : ${res.status}`);
 
     if (res.status == 200) {
       let html = await res.text();
 
-      // console.log(`**************************************`)
-      // console.log(`***                                 **`)
-      // console.log(`*** ${team}`)
-      // console.log(`***                                 **`)
-      //fs.writeFileSync(`c:/temp/${team.replace(/ /g, "-").toLowerCase()}.html`,content);
-//      console.log(`content :\n[${html}]`);
-      console.log(`**************************************`)
-      console.log(`**************************************`)
       let i = html.indexOf("Reçoit le ");
       if (i > 0) {
-        // console.log(`[${team}] : pattern found.`)
         html = html.substring(i);
         i = html.indexOf("<");
         html = html.substring(0, i);
@@ -283,11 +268,7 @@ const scrapper = {
         let words = html.split(" ");
 
         day = words[words.length - 1];
-        // console.log(`[${team}] : day found => ${day}`);
       } 
-      // else {
-      //   console.log(`[${team}] : pattern not found`);
-      // }
     }
     return day;
   },
@@ -312,10 +293,8 @@ const scrapper = {
     for (let i = 0; i < teamNames.length; i++) {
       let team = {};
       team.Name = teamNames[i];
-      if (!light) {
-        // console.log(`loading playing day for ${team.Name}`)
+      if (!light) {  // do not request team playing day to avoir too many subrequests.
         const d = await fsgtScrapper.getTeamDay(team.Name);
-        // console.log(`getTeamDay(${team.Name}) => ${d}`)
         team.Day = d;
       }
       teams.push(team);
@@ -332,16 +311,11 @@ const scrapper = {
       if (groups[i] == "a") {
         url = groupe_url_schema;
       }
-      // console.log(`loading group ${groups[i]} from ${url}`);
       let res = await fetch(url);
 
-      // console.log(`group ${groups[i]} fetch done ${res.status}`);
       if (res.status == 200) {
         let html = await res.text();
-
         let teams = await fsgtScrapper.getTeams(html,light);        
-        // console.log(`${teams.length} teams found:`);
-        // console.log(teams);
         teamsGrouped[groups[i]] = teams;        
       }      
     }
@@ -402,26 +376,19 @@ module.exports.GetCalendar = async function(group, team) {
   if (group == "a") {
     url = groupe_url_schema;
   }
-// console.log(`fetch calendar for ${team} in ${group} from ${url}`)
   let res = await fetch(url);
-// console.log(`calendar fetch done ${res.status} - ${res.statusText}`)
   if (res.status == 200) {
     let html =await res.text();
 
     let teams = await fsgtScrapper.getTeams(html,false);
-    // console.log(`found ${teams.length} teams in group ${team} (for team ${team})`);
     let matchArray = fsgtScrapper.getMatches(html);
 
     if (team != null) {
       let te = iCalendarGeneration.getTeam(teams, team);
-      // console.log(`team ${team} object :`,te);
       if (te != null) {
-        // console.log(`generating ICS for ${team}`);
         return iCalendarGeneration.getICS(matchArray, group, teams, te);
       }
-      // console.log(`team object for ${team} not found in `,teams);
     }
-    // console.log('team is null !');
     return null;
   }
 
@@ -432,7 +399,6 @@ module.exports.GetCalendar = async function(group, team) {
       url = groupe_url_schema;
     }
 
-    // console.log(`download group ${group} from ${url}`);
     let res = await fetch(url);
 
     if (res.status == 200) {
@@ -452,9 +418,6 @@ module.exports.GetCalendar = async function(group, team) {
           iCalendarGeneration.writeCalendar(matchArray, group, teams, teams[t]);
         }
       }
-    // } else {
-    //   console.log("error on (" + group + ") : " + url);
-    // }
+    } 
   };
 };
-
