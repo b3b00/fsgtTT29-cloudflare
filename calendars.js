@@ -313,6 +313,7 @@ const scrapper = {
       let team = {};
       team.Name = teamNames[i];
       if (!light) {
+        console.log(`loading playing day for ${team.Name}`)
         const d = await fsgtScrapper.getTeamDay(team.Name);
         console.log(`getTeamDay(${team.Name}) => ${d}`)
         team.Day = d;
@@ -403,20 +404,24 @@ module.exports.GetCalendar = async function(group, team) {
   }
 console.log(`fetch calendar for ${team} in ${group} from ${url}`)
   let res = await fetch(url);
-
+console.log(`calendar fetch done ${res.status} - ${res.statusText}`)
   if (res.status == 200) {
     let html =await res.text();
 
-    let teams = fsgtScrapper.getTeams(html,false);
-
+    let teams = await fsgtScrapper.getTeams(html,false);
+    console.log(`found ${teams.length} teams in group ${team} (for team ${team})`);
     let matchArray = fsgtScrapper.getMatches(html);
 
     if (team != null) {
       let te = iCalendarGeneration.getTeam(teams, team);
+      console.log(`team ${team} object :`,te);
       if (te != null) {
+        console.log(`generating ICS for ${team}`);
         return iCalendarGeneration.getICS(matchArray, group, teams, te);
       }
+      console.log(`team object for ${team} not found in `,teams);
     }
+    console.log('team is null !');
     return null;
   }
 

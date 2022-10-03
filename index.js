@@ -44,6 +44,7 @@ const index = async function(request) {
 const test = async function(request) {
   var group = request.params.group;
   console.log(`loading group [${group}`);
+  
   const teamsByGroup = await calendars.scrapper.getTeamsByGroup([group],false);    
   let response = new Response(JSON.stringify(teamsByGroup));
   return response;
@@ -54,7 +55,7 @@ router.get('/', index);
 
 router.get('/calendars/:group/:team', GetCalendar)
 
-router.get('/test/:group', test)
+router.get('/test/:group/:team', test)
 
 
 router.all("*", () => new Response("404, not found!", { status: 404 }))
