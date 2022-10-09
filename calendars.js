@@ -1,7 +1,6 @@
 const cheerio = require("cheerio");
-const moment = require("moment");
-
-//const request = require("sync-request");
+const dayjs = require('dayjs');
+var customParseFormat = require('dayjs/plugin/customParseFormat');
 const fs = require("fs");
 
 const groupe_url_schema = "http://t2t.29.fsgt.org/groupe/groupe";
@@ -110,16 +109,19 @@ const iCalendarGeneration = {
    */
   getMatchDate: function(match, teams) {
     let localTeam = this.getTeam(teams, match.local);
-    let d = moment(match.date, "DD/MM/YYYY");
-    let dayInWeek = d.weekday();
+    console.log(`getmatchdate ${match.date}`)
+    dayjs.extend(customParseFormat)
+    let d = dayjs(match.date, "DD/MM/YYYY");
+    console.log(`daysjs parsed`,d);
+    let dayInWeek = d.dayInWeek;
+    console.log('day in week is ',dayInWeek);
     let localTeamDay = this.getLocalTeamWeekDay(localTeam.Day);
-    if (dayInWeek < localTeamDay) {
-      d.add(localTeamDay - dayInWeek, "days");
-    } else if (dayInWeek > localTeamDay) {
-      d.subtract(dayInWeek - localTeamDay, "days");
-    }
+    d = d.day(localTeamDay);
+    console.log(`${match.local} team day : ${localTeamDay} => ${d}`)
+   
 
     let dateStr = d.format("YYYYMMDDT");
+    console.log("==> "+dateStr)
 
     return dateStr;
   },
