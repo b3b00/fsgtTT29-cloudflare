@@ -3,3 +3,11 @@ main = "./index.js"
 workers_dev = true
 node_compat = true
 compatibility_date = "2022-09-23"
+kv_namespaces = [
+  { binding = "DEVASSETS", id = "cb22322dcd0f4217a35e6503c1e4ac4f" }  
+]
+
+[site]
+bucket="./public"
+
+

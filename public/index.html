@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
+    <title>FSGT 29 TT calendars</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="./assets/dracula-ui.css" />
+    <script src="./assets/script.js"></script>    
+</head>
+
+
+<body onload="loadGroups();">
+
+    <iframe id="downloader" style="display:none"></iframe>
+
+    <h1 class="drac-heading drac-heading-xl drac-line-height drac-text-center drac-text-bold drac-text-purple">charger votre calendrier FSGT TT 29</h1>
+    <label for="groups">Groupes : </label>
+    <select id="groups" onchange="changeGroup();" class="drac-select drac-select-white">
+        <option value="">Sélectionner un groupe</option>        
+    </select>
+    <br><br>
+    <label for="teams">Équipes :</label>
+    <select class="drac-select drac-select-white" id="teams">
+        <option value="">Sélectionner une équipe</option>
+    </select><br><br>
+    <button class="drac-btn drac-bg-purple" onclick="download();">Télécharger le calendrier</button>
+
+</body>
+
+</html>

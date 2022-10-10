@@ -1,67 +1,97 @@
 import { Router } from 'itty-router'
 import calendars from './calendars'
-import { getTemplate } from './Template'
-import * as fs from 'fs';
 
 const router = Router()
 
-const groups = `
-<option value='a'>a</option>
-<option value='b'>b</option>
-<option value='c'>c</option>
-<option value='d'>d</option>
-<option value='e'>e</option>
-<option value='f'>f</option>`;
-
-
 const GetCalendar = async function(request) {
-  var group = request.params.group;
-  var team = request.params.team;
-  let ics = await calendars.GetCalendar(group,team);
+    var group = request.params.group
+    var team = request.params.team
+    let ics = await calendars.GetCalendar(group, team)
 
-  let response = new Response(ics);  
-  response.headers.set('Content-Type', 'text/calendar')  
-  return response;
+    let response = new Response(ics)
+    response.headers.set('Content-Type', 'text/calendar')
+    return response
 }
 
 const index = async function(request) {
-  let template = getTemplate();
-  const groups = `
-<option value='a'>a</option>
-<option value='b'>b</option>
-<option value='c'>c</option>
-<option value='d'>d</option>
-<option value='e'>e</option>
-<option value='f'>f</option>`;
-  const teamsByGroup = await calendars.scrapper.getTeamsByGroup(['a','b','c','d','e','f'],true);  
-  template = template.replace("<%=teamsByGroup%>",JSON.stringify(teamsByGroup));
-  template = template.replace("<%=groupsOptions%>",groups);
-  let response = new Response(template);  
-  response.headers.set('Content-type','text/html');
-  return response;
+  console.log("INDEX => getting asset index.html");
+    return await GetAsset('index.html')
 }
 
-const test = async function(request) {
-  var group = request.params.group;
-  console.log(`loading group [${group}`);
-  
-  const teamsByGroup = await calendars.scrapper.getTeamsByGroup([group],false);    
-  let response = new Response(JSON.stringify(teamsByGroup));
-  return response;
+const getGroups = async function(request) {
+    
+    console.log(`loading groups`)
+
+    const teamsByGroup = await calendars.scrapper.getTeamsByGroup(
+        ['a','b','c','d','e','f'],
+        true
+    );
+    console.log('groups ::: ',teamsByGroup);
+    let response = new Response(JSON.stringify(teamsByGroup))
+    response.headers.set('Content-type', 'application/json')
+    return response
 }
 
-router.get('/', index);
+const GetAssetHandler = async function(request) {
+    const assetName = request.params.name
+    return await GetAsset(assetName)
+}
 
+const GetAsset = async function(assetName) {
+    const assets = await DEVASSETS.list()
+    console.log('asset list', assets)
+    const items = assetName.split('.')
+    const name = items[0]
+    const extension = items[1]
+
+    let matches = assets.keys.filter(
+        x => x.name.startsWith(name) && x.name.endsWith(extension)
+    )
+    console.log(`found assets that matches ${assetName} :`,matches);
+
+    if (matches && matches.length > 0) {
+        assetName = matches[0].name;
+        console.log(`getting ${assetName} from KV`);
+
+        const assetBody = await DEVASSETS.get(assetName)
+        if (assetBody) {
+          console.log(`${assetName} found in KV`);
+          console.log(assetBody);
+            let response = new Response(assetBody)
+            if (assetName.endsWith('.html')) {
+              console.log('asset is html');
+                response.headers.set('Content-type', 'text/html')
+            } else if (assetName.endsWith('.css')) {
+                response.headers.set('Content-type', 'text/css')
+                console.log('asset is css');
+            } else if (assetName.endsWith('.js')) {
+              console.log('asset is javascript');
+                response.headers.set('Content-type', 'text/javascript')
+            } else {
+              console.log('asset is plain text');
+                response.headers.set('content-type', 'text/plain')
+            }
+            return response;
+        } else {
+          console.log(`${assetName} not found in KV`);
+            new Response(`404, ${assetName} not found!`, { status: 404 })
+        }
+    } else {
+      console.log(`no asset match ${assetName} in KV`);
+        new Response(`404, ${assetName} not found!`, { status: 404 })
+    }
+}
+
+router.get('/', index)
 
 router.get('/calendars/:group/:team', GetCalendar)
 
-router.get('/test/:group/:team', test)
+router.get('/groups', getGroups)
 
+router.get('/assets/:name', GetAssetHandler)
 
-router.all("*", () => new Response("404, not found!", { status: 404 }))
+router.all('*', () => new Response('404, not found!', { status: 404 }))
 
-
-addEventListener('fetch', (e) => {
-  e.respondWith(router.handle(e.request))
+addEventListener('fetch', e => {
+    e.respondWith(router.handle(e.request))
 })
-
