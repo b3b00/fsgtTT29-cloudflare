@@ -31,15 +31,18 @@ changeGroup = function (group) {
 function download() {
     teams = document.getElementById("teams");
     groups = document.getElementById('groups');
+    forceInput = document.getElementById('force');    
 
     group = groups.value;
     team = teams.value;
+    force = forceInput.checked ? '/force' : ''
     shortTeam = team != null ? team.replace(" ", "").toLocaleLowerCase() : "";
     if (shortTeam == "" || group == "") {
         window.alert("vous devez d'abord choisir un group et une équipe !");
         return;
     }
     downloader = document.getElementById("downloader");
-    downloader.src = `/calendars/${group}/${shortTeam}`;
+    downloader.src = `/calendars${force}/${group}/${shortTeam}`;
+    downloader.download= `${shortTeam}.ics`;
     console.log(`download ${group} - ${shortTeam}`)
 }
