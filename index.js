@@ -88,10 +88,20 @@ router.get('/calendars/:group/:team', GetCalendar)
 
 router.get('/groups', getGroups)
 
+// router.get('/table', table)
+
 router.get('/assets/:name', GetAssetHandler)
+
+router.get('/table',table);
 
 router.all('*', () => new Response('404, not found!', { status: 404 }))
 
-addEventListener('fetch', e => {
-    e.respondWith(router.handle(e.request))
-})
+
+export default {
+  async fetch(request, environment, context) {
+    return router.handle(request, environment, context);
+  },
+  async scheduled(controller, environment, context) {
+    // await doATask();
+  }
+}

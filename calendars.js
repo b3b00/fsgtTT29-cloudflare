@@ -109,19 +109,14 @@ const iCalendarGeneration = {
    */
   getMatchDate: function(match, teams) {
     let localTeam = this.getTeam(teams, match.local);
-    console.log(`getmatchdate ${match.date}`)
     dayjs.extend(customParseFormat)
     let d = dayjs(match.date, "DD/MM/YYYY");
-    console.log(`daysjs parsed`,d);
     let dayInWeek = d.dayInWeek;
-    console.log('day in week is ',dayInWeek);
     let localTeamDay = this.getLocalTeamWeekDay(localTeam.Day);
     d = d.day(localTeamDay);
-    console.log(`${match.local} team day : ${localTeamDay} => ${d}`)
    
 
     let dateStr = d.format("YYYYMMDDT");
-    console.log("==> "+dateStr)
 
     return dateStr;
   },
@@ -241,10 +236,10 @@ const scrapper = {
   etxractdataFromNodeArray: function(html, selector) {
     let values = Array();
     let content = cheerio.load(html);
-    let nodes = content(selector);
+    let nodes = content(selector);    
     for (let i = 0; i < nodes.length; i++) {
       let node = nodes[i];
-      name = node.childNodes[0].data;
+      let name = node.childNodes[0].data;
       values.push(name);
     }
     return values;
@@ -291,7 +286,6 @@ const scrapper = {
       "div#classement table tr td.nom"
     );
     let teams = [];
-
     for (let i = 0; i < teamNames.length; i++) {
       let team = {};
       team.Name = teamNames[i];

@@ -4,10 +4,14 @@ workers_dev = true
 node_compat = true
 compatibility_date = "2022-09-23"
 kv_namespaces = [
-  { binding = "DEVASSETS", id = "cb22322dcd0f4217a35e6503c1e4ac4f" }  
+  { binding = "DEVASSETS", id = "cb22322dcd0f4217a35e6503c1e4ac4f", preview_id="5f5b2b0aaf2b4edc89d8fdbfd44799f9" }    
 ]
 
 [site]
 bucket="./public"
 
 
+[[d1_databases]]
+ binding = "MYBASE"
+ database_name = "test"
+ database_id = "3aefbf47-488c-48b1-956d-45bcca3cc52c"
