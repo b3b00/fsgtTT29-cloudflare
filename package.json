@@ -12,6 +12,7 @@
     "author": "{{ authors }}",
     "license": "ISC",
     "devDependencies": {
+        "better-sqlite3": "^8.0.1",
         "prettier": "^1.17.0"
     },
     "dependencies": {
