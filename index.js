@@ -1,5 +1,5 @@
 import { Router } from 'itty-router'
-import calendars from './calendars'
+import calendars from './calendars.mjs'
 
 const router = Router()
 
